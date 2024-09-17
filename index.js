@@ -19,6 +19,8 @@ app.use(cors({
   allowedHeaders: "Content-Type, Authorization",
 }));
 
+app.options('*', cors()); 
+
 //middleware to set router
 app.use("/", quotes_routes);
 app.use(router);
