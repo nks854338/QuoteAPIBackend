@@ -9,13 +9,12 @@ const cors = require("cors");
 //middlewares
 app.use(express.urlencoded({ extended: false }));
 //middleware to set router
-app.use("/api/quotes", quotes_routes);
+app.use("/", quotes_routes);
 app.use(quotes_routes);
 
 const port = process.env.port || 6600;
 
 app.use(cors());
-y
 const start = async () => {
   try {
     app.listen(port, () => {
