@@ -1,81 +1,97 @@
 const Quote = require("../models/quotes");
 
 // get all Quotes request controllers
-async function handleGetAllQuotes(req, res){
+async function handleGetAllQuotes(req, res) {
   try {
-    const getAllQuotes = await Quote.find({}).sort({ QuoteId: -1 });
+    const getAllQuotes = await Quote.find({}).sort({ QuoteId: 1 });
     res.status(201).send(getAllQuotes);
   } catch (error) {
     res.status(400).send(error);
   }
 }
 
-
 // find Quotes by id controllers
-async function handleGetQuotesById(req, res){
+async function handleGetQuotesById(req, res) {
   try {
     const _id = req.params.id;
     const getQuote = await Quote.findById(_id);
     res.send(getQuote);
-    // return res.json({ status: "Successfully get" });
   } catch (error) {
     res.status(400).send(error);
   }
 }
 
 // Quotes data Insertion controllers
-async function handlePostAllQuotes(req, res){
+async function handlePostAllQuotes(req, res) {
   try {
     const body = req.body;
     if (
       !body ||
       !body.quoteTitle ||
       !body.author ||
-      !body.category ||
-      !body.quoteOrigin ||
-      !body.tags
+      !body.state||
+      !body.category
     ) {
-      return res.status(400).json({ msg: "all fields are req..." }); //400 Bad Request
+      return res.status(400).json({ msg: "All fields are required." });
     }
     const count = await Quote.countDocuments({});
     const result = await Quote.create({
-      QuoteId: count + 1,
+      QuoteId: count + 2,
       quoteTitle: body.quoteTitle,
-      quoteTitleHindi: body.quoteTitleHindi,
       author: body.author,
       category: body.category,
-      quoteOrigin: body.quoteOrigin,
-      tags: body.tags,
-      createdAt: body.createdAt,
+      state: body.state,
     });
 
     console.log("result: ", result);
-
-    return res.status(201).json({ msg: "success", QuoteId: result._QuoteId });
+    console.log("Received body:", body);
+    return res.status(201).json({ msg: "success", QuoteId: result.QuoteId });
   } catch (error) {
-    res.status(400).send(error);
+    console.error("Error in handlePostAllQuotes:", error);
+res.status(400).json({ msg: "Failed to add quote", error: error.message });
   }
 }
 
 // Quotes Data updation controllers
-async function handlePatchAllQuotes(req, res){
+async function handlePatchAllQuotes(req, res) {
   try {
     const _id = req.params.id;
-    const getQuote = await Quote.findByIdAndUpdate(_id, req.body, {new: true});
+    const getQuote = await Quote.findByIdAndUpdate(_id, req.body, { new: true });
     res.send(getQuote);
-    // return res.json({ status: "Successfully updated" });
   } catch (error) {
     res.status(400).send(error);
   }
 }
 
 // Quotes Data deletion controllers
-async function handleDeleteAllQuotes(req, res){
+async function handleDeleteAllQuotes(req, res) {
   try {
     const _id = req.params.id;
     const getQuote = await Quote.findByIdAndDelete(_id);
     res.send(getQuote);
-    // return res.json({ status: "Successfully deleted" });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
+// Search by author name controller
+async function handleSearchByKey(req, res) {
+  try {
+    const { author } = req.query;
+
+    if (!author) {
+      return res.status(400).json({ msg: "Author query parameter is required" });
+    }
+
+    const searchResults = await Quote.find({
+      author: { $regex: author, $options: "i" }
+    });
+
+    if (searchResults.length === 0) {
+      return res.status(404).json({ msg: "No quotes found for the specified author" });
+    }
+
+    res.status(200).send(searchResults);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -88,4 +104,5 @@ module.exports = {
   handlePatchAllQuotes,
   handleDeleteAllQuotes,
   handleGetQuotesById,
+  handleSearchByKey,
 };

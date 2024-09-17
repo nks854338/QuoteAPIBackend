@@ -1,20 +1,31 @@
 const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const quotes_routes = require("./routes/quotes");
 require("dotenv").config();
 const app = express();
+const router = require("./routes/quotes");
 const connectDB = require("./db/connect");
-const cors = require("cors");
+app.use(express.json());
+
 
 //middlewares
 app.use(express.urlencoded({ extended: false }));
+
+app.use(cors({
+  origin: "http://localhost:3000",
+  method: ['GET', 'POST', 'PATCH', 'DELETE'],
+  credentials:true,
+  allowedHeaders: "Content-Type, Authorization",
+}));
+
 //middleware to set router
 app.use("/", quotes_routes);
-app.use(quotes_routes);
+app.use(router);
 
 const port = process.env.port || 6600;
 
-app.use(cors());
+
 const start = async () => {
   try {
     app.listen(port, () => {

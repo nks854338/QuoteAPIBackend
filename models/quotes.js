@@ -4,12 +4,9 @@ const quoteSchema = new mongoose.Schema({
     QuoteId: {
         type: Number,
         required: true,
+        unique: true,
       },
       quoteTitle: {
-        type: String,
-        required: true,
-      },
-      quoteTitleHindi: {
         type: String,
         required: true,
       },
@@ -21,16 +18,9 @@ const quoteSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      quoteOrigin: {
+      state: {
         type: String,
-        required: true,
-      },
-      tags: {
-        type: String,
-      },
-      createdAt: {
-        type: String,
-        default: Date.now(),
+        default: "Done",
       },
     }
 );

@@ -6,6 +6,7 @@ const {
   handlePatchAllQuotes,
   handleDeleteAllQuotes,
   handleGetQuotesById,
+  handleSearchByKey,
 } = require("../controllers/quotes");
 
 
@@ -23,5 +24,8 @@ router.patch("/quotes/:id", handlePatchAllQuotes);
 
 // Quotes Data Deletation
 router.delete("/quotes/:id", handleDeleteAllQuotes);
+
+// Quotes Data Deletation
+router.get("/quotes", handleSearchByKey);
 
 module.exports = router;
