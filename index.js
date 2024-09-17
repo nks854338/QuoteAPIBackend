@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "https://quote-api-frontend.vercel.app/",
   method: ['GET', 'POST', 'PATCH', 'DELETE'],
   credentials:true,
   allowedHeaders: "Content-Type, Authorization",
